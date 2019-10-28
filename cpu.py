@@ -6,15 +6,37 @@ from register import Register, Register_With_History
 # General stuff to initialize a map used for disassembly
 
 opcode_to_mnemonic = dict()
-opcode_to_mnemonic[4] = "BRA"
 opcode_to_mnemonic[2] = "DO_LIT"
+opcode_to_mnemonic[3] = "HALT"
+opcode_to_mnemonic[4] = "BRA"
+opcode_to_mnemonic[5] = "LESS"
+opcode_to_mnemonic[6] = "++"
+opcode_to_mnemonic[7] = "DROP"
 opcode_to_mnemonic[8] = "STORE"
 opcode_to_mnemonic[9] = "FETCH"
 opcode_to_mnemonic[10] = "JSR"
+opcode_to_mnemonic[11] = "JSR"
 opcode_to_mnemonic[12] = "JMPF"
+opcode_to_mnemonic[13] = "TO_R"
+opcode_to_mnemonic[14] = "FROM_R"
+opcode_to_mnemonic[16] = "RP_FETCH"
+opcode_to_mnemonic[17] = "RP_STORE"
+opcode_to_mnemonic[18] = "R_FETCH"
+opcode_to_mnemonic[19] = "DUMP"
+opcode_to_mnemonic[20] = "SP_FETCH"
+opcode_to_mnemonic[21] = "SWAP"
+opcode_to_mnemonic[22] = "OVER"
+opcode_to_mnemonic[23] = "SP_FETCH"
+opcode_to_mnemonic[24] = "+"
+opcode_to_mnemonic[25] = "-"
+opcode_to_mnemonic[26] = "NEG?"
 opcode_to_mnemonic[27] = "AND"
+opcode_to_mnemonic[28] = "OR"
+opcode_to_mnemonic[29] = "XOR"
+opcode_to_mnemonic[30] = "*"
 
 opcode_to_mnemonic[31] = "EQUAL"
+opcode_to_mnemonic[32] = "UM+"
 opcode_to_mnemonic[52] = "STORE2"
 
 
