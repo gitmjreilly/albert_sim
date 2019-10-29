@@ -500,6 +500,11 @@ class CPU(object):
         
 
         if (opcode == DROP_OPC):
+            left_operand = self.PTOS.read()
+            disassembly_string = "[%04X] DROP" % (left_operand)
+            c = CPUStatus(absolute_address, 
+                self.CS.read(), self.DS.read(), self.PSP.read(), 
+                self.RSP.read(), opcode, disassembly_string)
             self._address_history.append(c)
 
             self.PSP.dec()
@@ -522,6 +527,11 @@ class CPU(object):
         
 
         if (opcode == DUP_OPC):
+            left_operand = self.PTOS.read()
+            disassembly_string = "[%04X] DUP" % (left_operand)
+            c = CPUStatus(absolute_address, 
+                self.CS.read(), self.DS.read(), self.PSP.read(), 
+                self.RSP.read(), opcode, disassembly_string)
             self._address_history.append(c)
 
             self.mem_write(scaledDS + self.PSP.read(), self.PTOS.read())
@@ -590,7 +600,7 @@ class CPU(object):
         
 
         if (opcode == FROM_R_OPC):
-            disassembly_string = "FROM_R" 
+            disassembly_string = "FROM_R (RTOS: %04X)" % (self.RTOS.read())
             c = CPUStatus(absolute_address, 
                 self.CS.read(), self.DS.read(), self.PSP.read(), 
                 self.RSP.read(), opcode, disassembly_string)
@@ -694,7 +704,7 @@ class CPU(object):
             right_operand = self.PTOS.read()
             left_operand = self.mem_read(scaledDS + self.PSP.read() - 1)
 
-            disassembly_string = "[%04X %04X] AND" % (left_operand, right_operand)
+            disassembly_string = "[%04X %04X] LESS" % (left_operand, right_operand)
             c = CPUStatus(absolute_address, 
                 self.CS.read(), self.DS.read(), self.PSP.read(), 
                 self.RSP.read(), opcode, disassembly_string)
@@ -822,6 +832,12 @@ class CPU(object):
         
 
         if (opcode == OVER_OPC):
+            right_operand = self.PTOS.read()
+            left_operand = self.mem_read(scaledDS + self.PSP.read() - 1)
+            disassembly_string = "[%04X %04X] OVER"  & (left_operand, right_operand)
+            c = CPUStatus(absolute_address, 
+                self.CS.read(), self.DS.read(), self.PSP.read(), 
+                self.RSP.read(), opcode, disassembly_string)
             self._address_history.append(c)
 
             self.mem_write(self.PSP.read() + scaledDS , self.PTOS.read())
@@ -879,7 +895,7 @@ class CPU(object):
         
 
         if (opcode == R_FETCH_OPC):
-            left_operand = self.PTOS.read()
+            left_operand = self.RTOS.read()
             disassembly_string = "[RTOS: %04X] R_FETCH" % (left_operand)
             c = CPUStatus(absolute_address, 
                 self.CS.read(), self.DS.read(), self.PSP.read(), 
@@ -940,7 +956,8 @@ class CPU(object):
         
 
         if (opcode == RP_FETCH_OPC):
-            disassembly_string = "RP_FETCH" 
+            left_operand = self.RSP.read()
+            disassembly_string = "[RSP: %04X] RP_FETCH" % (left_operand)
             c = CPUStatus(absolute_address, 
                 self.CS.read(), self.DS.read(), self.PSP.read(), 
                 self.RSP.read(), opcode, disassembly_string)
@@ -953,6 +970,11 @@ class CPU(object):
         
 
         if (opcode == RP_STORE_OPC):
+            left_operand = self.PTOS.read()
+            disassembly_string = "[PTOS: %04X] RP_STORE" % (left_operand)
+            c = CPUStatus(absolute_address, 
+                self.CS.read(), self.DS.read(), self.PSP.read(), 
+                self.RSP.read(), opcode, disassembly_string)
             self._address_history.append(c)
 
             self.RSP.write(self.PTOS.read())
@@ -1008,6 +1030,11 @@ class CPU(object):
         
 
         if (opcode == SP_FETCH_OPC):
+            left_operand = self.PSP.read()
+            disassembly_string = "[PSP: %04X] SP_FETCH" % (left_operand)
+            c = CPUStatus(absolute_address, 
+                self.CS.read(), self.DS.read(), self.PSP.read(), 
+                self.RSP.read(), opcode, disassembly_string)
             self._address_history.append(c)
 
             self.mem_write(self.PSP.read() + scaledDS , self.PTOS.read())
@@ -1017,6 +1044,11 @@ class CPU(object):
         
 
         if (opcode == SP_STORE_OPC):
+            left_operand = self.PTOS.read()
+            disassembly_string = "[PTOS: %04X] SP_STORE" % (left_operand)
+            c = CPUStatus(absolute_address, 
+                self.CS.read(), self.DS.read(), self.PSP.read(), 
+                self.RSP.read(), opcode, disassembly_string)
             self._address_history.append(c)
 
             self.PSP.write(self.PTOS.read())
@@ -1104,6 +1136,13 @@ class CPU(object):
         
 
         if (opcode == SWAP_OPC):
+            right_operand = self.PTOS.read()
+            left_operand = self.mem_read(scaledDS + self.PSP.read() - 1)
+            disassembly_string = "[%04X %04X] SWAP" % (left_operand, right_operand)
+            c = CPUStatus(absolute_address, 
+                self.CS.read(), self.DS.read(), self.PSP.read(), 
+                self.RSP.read(), opcode, disassembly_string)
+
             self._address_history.append(c)
 
             literal = self.PTOS.read()
@@ -1172,6 +1211,11 @@ class CPU(object):
         
 
         if (opcode == TO_R_OPC):
+            left_operand = self.PTOS.read()
+            disassembly_string = "[PTOS: %04X] TO_R" % (left_operand)
+            c = CPUStatus(absolute_address, 
+                self.CS.read(), self.DS.read(), self.PSP.read(), 
+                self.RSP.read(), opcode, disassembly_string)
             self._address_history.append(c)
 
             self.mem_write(self.RSP.read() + scaledDS , self.RTOS.read())
