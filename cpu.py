@@ -94,9 +94,9 @@ class CPUStatus(object):
 
         mnemonic = opcode_to_mnemonic.get(self.d["opcode"], "TBD")
         if (self.d["disassembly_string"] == ""):
-            tmp += "%-25s |" % (mnemonic)
+            tmp += "%-50s |" % (mnemonic)
         else:
-            tmp += "%-25s |" % (self.d["disassembly_string"])
+            tmp += "%-50s |" % (self.d["disassembly_string"])
 
 
         # tmp += "CS   : %04X | " % (self.d["CS"])
