@@ -1,25 +1,21 @@
 class RAM(object):
 
     def __init__(self):
-        # Fill Memory with NOPS
-        self.__memory__ = (8 * 1024 * 1024) * [0]
+        self.__memory__ = (64 * 1024) * [0]
         self.name = "RAM"
 
     def __str__(self):
         return("This is the RAM object")
         
     def read(self, address):
-        # print("RAM Reading from address %x" % address)
         val = self.__memory__[address]
-        # print("   VAL is %x" % val)
         return(val)
         
     def write(self, address, value):
         value = value & 0xFFFF
         self.__memory__[address] = value
-        # print("RAM writing val %x to addr %x" % (value, address) )
                
-    def reset(self):
+    def clear_ram(self):
         self.__memory__[:] = len(self.__memory__) * [0]
     
         

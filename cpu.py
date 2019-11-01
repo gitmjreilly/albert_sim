@@ -15,7 +15,7 @@ opcode_to_mnemonic[7] = "DROP"
 opcode_to_mnemonic[8] = "STORE"
 opcode_to_mnemonic[9] = "FETCH"
 opcode_to_mnemonic[10] = "JSR"
-opcode_to_mnemonic[11] = "JSR"
+opcode_to_mnemonic[11] = "RET"
 opcode_to_mnemonic[12] = "JMPF"
 opcode_to_mnemonic[13] = "TO_R"
 opcode_to_mnemonic[14] = "FROM_R"
@@ -99,7 +99,10 @@ class CPUStatus(object):
             s = "%s" % (self.d["disassembly_string"])
 
         l  = s.split('|')
-        s2 = "%-30s | %-70s |" % (l[0], l[1])
+        try:
+            s2 = "%-30s | %-70s |" % (l[0], l[1])
+        except:
+            s2 = s
         tmp += s2
 
 
@@ -285,7 +288,11 @@ class CPU(object):
         print "Address history : "
         for history_record in (self._address_history):
             print history_record
-        
+
+    def clear_address_history(self):
+        self._address_history = 10000 * [0x0000]
+
+
     def step(self):
         absolute_address = (self.CS.read() << 4) + self.PC.read()     
 
@@ -625,7 +632,7 @@ class CPU(object):
             return(return_status)
         
         if (opcode == HALT_OPC):
-            disassembly_string = "HALT" 
+            disassembly_string = "HALT | %s" % (stack_string)
             c = CPUStatus(absolute_address, 
                 self.CS.read(), self.DS.read(), self.PSP.read(), 
                 self.RSP.read(), opcode, disassembly_string)

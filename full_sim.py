@@ -5,6 +5,7 @@
 ######################################################################
 import sys
 import signal
+import getopt
 
 from cpu import CPU
 from register import Register
@@ -22,6 +23,7 @@ from time import sleep
 human_time = 0.00
 tenth_second_tick = 0
 printed_time_stamps_are_enabled = False
+_403_filename = ""
 ######################################################################
 
 
@@ -168,6 +170,8 @@ def construct_computer_system():
     # The timer/counter needs to schedule future events (ie. the ticks)
     counter_0.register_scheduler_function(scheduler.add_event)
 
+    reset_computer()
+
 ######################################################################
 
 
@@ -181,13 +185,28 @@ def construct_computer_system():
 #    
 def load_object_file() :
     global the_cpu
+    global _403_filename
 
-    obj_file_name = raw_input("Enter name of object file to load>");
+    print("")
+    print("You are about to load a 403 hex file directly into memory.")
+    print("The PC will be updated with the starting address of the hex file,")
+    print("but NONE of the other registers will be updated, unless the")
+    print("simulated computer is reset.")
+    print("")
+    reset_answer = raw_input("Would you like to reset the computer (y/n)?")
+    if (reset_answer.upper() == "Y"):
+       reset_computer()
+
+    obj_file_name = raw_input("Enter name of object file to load (default is [%s]) >" % (_403_filename));
     try:
+        if (obj_file_name == ""):
+            obj_file_name = _403_filename
         f = open(obj_file_name) 
     except:
         print "Could not open %s" % obj_file_name
         return
+
+    _403_filename = obj_file_name
         
         
     s = f.read(4)
@@ -480,7 +499,27 @@ def loadObjectFile2() :
 
     f.close()
 ######################################################################
+
  
+######################################################################
+def reset_computer():
+   the_cpu.PC.write(0)
+   the_cpu.RSP.write(0xFE00)
+   the_cpu.PSP.write(0xFF00)
+   the_cpu.CS.write(0)
+   the_cpu.DS.write(0)
+   the_cpu.ES.write(0)
+   the_cpu.INT_CTL_LOW.write(0)
+   the_cpu.clear_address_history()
+   console_serial_port.reset()
+     # serial_1.reset()
+     # serial_2.reset()
+   print("The Computer has been reset.")
+
+
+######################################################################
+
+
   
 ######################################################################
 def help_message():
@@ -488,7 +527,7 @@ def help_message():
     print "h - This help message"
     print "r - run the simulator"
     print "s - STEP the simulator"
-    print "R - reset the cpu "
+    print "R - reset the computer"
     print "a - show scheduler"
     print "d - show state"
     print "m - dump memory"
@@ -541,10 +580,13 @@ def init():
 ######################################################################
 
 
+
 ######################################################################
 # 
 # Main Program
 #
+
+    
 init()
 
 while (True):
@@ -576,17 +618,7 @@ while (True):
         continue
         
     if (selection == "R"):
-        the_cpu.PC.write(0)
-        the_cpu.RSP.write(0xFE00)
-        the_cpu.PSP.write(0xFF00)
-        the_cpu.CS.write(0)
-        the_cpu.DS.write(0)
-        the_cpu.ES.write(0)
-        the_cpu.INT_CTL_LOW.write(0)
-        console_serial_port.reset()
-        the_ram.reset()
-        # serial_1.reset()
-        # serial_2.reset()
+        reset_computer()
         continue
         
     if (selection == "d"):
