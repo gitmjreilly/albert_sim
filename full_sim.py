@@ -111,14 +111,14 @@ def construct_computer_system():
     # address_space.add_device(0xF030, 0xF03F, serial_2)
     address_space.add_device(0xF060, 0xF06F, counter_0)
 
-    address_space.add_device(0x1F000, 0x1F00F, console_serial_port)
-    address_space.add_device(0x2F000, 0x2F00F, console_serial_port)
-    address_space.add_device(0x3F000, 0x3F00F, console_serial_port)
-    address_space.add_device(0x4F000, 0x4F00F, console_serial_port)
+    # address_space.add_device(0x1F000, 0x1F00F, console_serial_port)
+    # address_space.add_device(0x2F000, 0x2F00F, console_serial_port)
+    # address_space.add_device(0x3F000, 0x3F00F, console_serial_port)
+    # address_space.add_device(0x4F000, 0x4F00F, console_serial_port)
     
     # Make sure to keep RAM at end of address space because 
     # address space is searched (for devices) in insertion order
-    address_space.add_device(0, 1024 * 1024 * 8, the_ram)
+    address_space.add_device(0, 0xFFFF, the_ram)
     
     
     the_cpu.set_memory_methods(
@@ -226,6 +226,7 @@ def load_object_file() :
             return
             
         s = f.read(4)
+        # print("DEBUG hex 4 is [%s]" % (s))
         data_word = int(s, 16)
             
         address_space.write(memory_addr, data_word)
@@ -376,7 +377,7 @@ def initMemoryProtection() :
     # then open holes as necessary.
     print "Protecting mem. Any loaded progs will lose their protection settings"
     
-    for  memoryAddr in xrange (0, 0x60000) :
+    for  memoryAddr in xrange (0, 0xFFFF):
     	address_space.write_type(memoryAddr, AddressSpace.NO_ACCESS);
     
     # Mark top 4K (of a few of the bottom few banks) as  data to handle 
@@ -571,7 +572,9 @@ def init():
 
     construct_computer_system()
 
-    initMemoryProtection()
+    # removed memory protection stuff on Nov 2, 2019
+    # because we're working only with 403 files (Pat & Me)
+    # initMemoryProtection()
     
     load_pats_loader()
     
