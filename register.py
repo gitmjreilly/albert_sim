@@ -36,20 +36,20 @@ class Register_With_History(object):
         return(str(self.value))
         
     def read(self):
+        value = self.value
+        if (value != (value & 0xFFFF)):
+            print("ERROR tried to read to value outside 16 bit range [%08X] to register " % (value))
+            return(0)
+            
         return(self.value)
         
-    def read_previous(self):
-        # head is the free spot
-        p = self._head
-        s = ""
-        for num_entries in xrange(10):
-            p = p - 1
-            if (p < 0):
-               p = Register_With_History.NUM_HISTORY_ENTRIES - 1
-            s += "%04X " % (self.history[p]) + " "
-        return(s)
+
         
     def write(self, value):
+        if (value != (value & 0xFFFF)):
+            print("ERROR tried to write to value outside 16 bit range [%08X] to register " % (value))
+            return(0)
+            
         self.history[self._head] = self.value
         self._head = self._head + 1
         if (self._head == Register_With_History.NUM_HISTORY_ENTRIES):
@@ -57,10 +57,20 @@ class Register_With_History(object):
         self.value = value & 0xFFFF
         
     def inc(self):
+        value = self.value
+        if (value != (value & 0xFFFF)):
+            print("ERROR tried to read to increment value outside 16 bit range [%08X] to register " % (value))
+            return(0)
+            
         self.write((self.value + 1) & 0xFFFF)
 
 
     def dec(self):
+        value = self.value
+        if (value != (value & 0xFFFF)):
+            print("ERROR tried to read to decrement value outside 16 bit range [%08X] to register " % (value))
+            return(0)
+            
         self.write((self.value - 1) & 0xFFFF)
         
 print " Just imported register. "        

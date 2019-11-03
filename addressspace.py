@@ -1,7 +1,7 @@
 class AddressSpace(object):
 
     # Formally define the amount of memory we support
-    MEMORY_SIZE = 16 * 1024 * 1024
+    MEMORY_SIZE = 64 * 1024
 
     # We support 3 access categories for all 
     # memory in the simulator.
@@ -24,11 +24,19 @@ class AddressSpace(object):
         
 
     def add_device(self, base_address, max_address, device):
+        if (base_address < 0) :
+            print("FATAL - tried to add device below address 0")
+            print("device [%s]" % (device))
+        if (max_address > (self.MEMORY_SIZE - 1)) :
+            print("FATAL - tried to add device above MEMORY_SIZE")
+            print("device [%s]" % (device))
+           
         device_description  = dict()
         device_description["base_address"] = base_address
         device_description["max_address"] =  max_address
         device_description["device"] = device
         self.device_list.append(device_description)
+
         
     def super_read(self, absolute_address):
         device_is_found = 0
@@ -39,7 +47,7 @@ class AddressSpace(object):
                 relative_address = absolute_address - base_address
                 return(memory_mapped_device['device'].read(relative_address), self.type_buffer[absolute_address])
         
-        print("Fatal Error: no device mapped to address %x" % absolute_address)
+        print("Fatal Error: no device mapped to address %x" % (absolute_address))
         # exit(1)    
 
         
@@ -52,13 +60,28 @@ class AddressSpace(object):
                 self.is_fatal_memory_error = True
                 return(0)
 
+        if (absolute_address > (self.MEMORY_SIZE - 1)):
+            print("ERROR tried to read address [%08X] beyond memory size" % (absolute_address))
+            return(0)
+
+        if (absolute_address < 0):
+            print("ERROR tried to read address [%08X] below 0 " % (absolute_address))
+            return(0)
+            
+            
         device_is_found = 0
         for memory_mapped_device in self.device_list:
             base_address = memory_mapped_device['base_address']
             max_address = memory_mapped_device['max_address']
             if ( (absolute_address >= base_address) and (absolute_address <= max_address) ) :
                 relative_address = absolute_address - base_address
-                return(memory_mapped_device['device'].read(relative_address))
+
+                value = memory_mapped_device['device'].read(relative_address)
+                if (value != (value & 0xFFFF)):
+                    print("ERROR tried to read value outside 16 bit range [%08X] " % (value))
+                    return(0)
+                return(value)
+
         
         print("Fatal Error: no device mapped to address %x" % absolute_address)
         # exit(1)    
@@ -72,16 +95,31 @@ class AddressSpace(object):
                 self.is_fatal_memory_error = True
                 return(0)
 
+        if (absolute_address > (self.MEMORY_SIZE - 1)):
+            print("ERROR tried to code read address [%08X] beyond memory size" % (absolute_address))
+            return(0)
+            
+        if (absolute_address < 0):
+            print("ERROR tried to read address [%08X] below 0 " % (absolute_address))
+            return(0)
+            
         device_is_found = 0
         for memory_mapped_device in self.device_list:
             base_address = memory_mapped_device['base_address']
             max_address = memory_mapped_device['max_address']
             if ( (absolute_address >= base_address) and (absolute_address <= max_address) ) :
                 relative_address = absolute_address - base_address
-                return(memory_mapped_device['device'].read(relative_address))
+
+                value = memory_mapped_device['device'].read(relative_address)
+                if (value != (value & 0xFFFF)):
+                    print("ERROR tried to code read value outside 16 bit range [%08X] " % (value))
+                    return(0)
+                return(value)
+
         
         print("Fatal Error: no device mapped to address %x" % absolute_address)
         # exit(1)    
+
 
         
     def write(self, absolute_address, value):    
@@ -92,6 +130,18 @@ class AddressSpace(object):
                 self.is_fatal_memory_error = True
                 return(0)
 
+        if (absolute_address > (self.MEMORY_SIZE - 1)):
+            print("ERROR tried to write to  address [%08X] beyond memory size" % (absolute_address))
+            return(0)
+            
+        if (absolute_address < 0):
+            print("ERROR tried to WRITE to address [%08X] below 0 " % (absolute_address))
+            return(0)
+            
+        if (value != (value & 0xFFFF)):
+            print("ERROR tried to WRITE to value outside 16 bit range (decimal) [%d] " % (value))
+            return(0)
+            
         device_is_found = 0
         for memory_mapped_device in self.device_list:
             base_address = memory_mapped_device['base_address']
@@ -101,7 +151,7 @@ class AddressSpace(object):
                 memory_mapped_device['device'].write(relative_address, value)
                 return
         
-        print("Fatal Error: no device mapped to address %x" % absolute_address)
+        print("Fatal Error: no device mapped to address %x" % (absolute_address))
         # exit(1)    
         
     def write_type(self, absolute_address, value):    
