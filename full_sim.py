@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/pypy
 
 """ Main Computer Simulator Program """
 
@@ -190,12 +190,9 @@ def load_object_file() :
     print("")
     print("You are about to load a 403 hex file directly into memory.")
     print("The PC will be updated with the starting address of the hex file,")
-    print("but NONE of the other registers will be updated, unless the")
-    print("simulated computer is reset.")
+    print("and the entire computer will be reset.")
     print("")
-    reset_answer = raw_input("Would you like to reset the computer (y/n)?")
-    if (reset_answer.upper() == "Y"):
-       reset_computer()
+    reset_computer()
 
     obj_file_name = raw_input("Enter name of object file to load (default is [%s]) >" % (_403_filename));
     try:
@@ -244,7 +241,12 @@ def memory_dump() :
     i = 1
     while (i <= size) :
         (value, type)= address_space.super_read(start_addr)
-        print "   %04X: %04X %04d" % (start_addr, value, type)
+        if ( (value >= 32) and (value <= 126) ) :
+           ch = chr(value)
+        else:
+           ch = "NP"
+        
+        print "   %04X: %04X %3s  %04d" % (start_addr, value, ch, type)
         start_addr = start_addr + 1
         i = i + 1
 
