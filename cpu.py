@@ -317,7 +317,15 @@ class CPU(object):
             # Please note; all of the instructions assume the PC is pointing
             # at the location AFTER the current opcode
             self.PC.inc()
-            status = self._do_instruction(opcode, absolute_address)
+            try:
+               status = self._do_instruction(opcode, absolute_address)
+            except BaseException, e:
+               s = "Exception in step from do_instruction: opcode [%08X] abs addr [%08X]" % (opcode, absolute_address)
+               print(s)
+               print("Exception details :")
+               print(e.args)
+               return(1)
+
         return(status)
         
         
