@@ -64,7 +64,7 @@ def construct_computer_system():
     global the_cpu
     global address_space
     # global ram
-    global the_ram
+    # global the_ram
     global console_serial_port
     global interrupt_controller
     global scheduler
@@ -118,6 +118,7 @@ def construct_computer_system():
     
     # Make sure to keep RAM at end of address space because 
     # address space is searched (for devices) in insertion order
+# TODO uncomment this
     address_space.add_device(0, 0xFFFF, the_ram)
     
     
@@ -353,7 +354,13 @@ def run_simulator(single_step_mode):
             
         
         the_cpu.set_interrupt_input(global_interrupt)
-        status = the_cpu.step()
+        try:
+            status = the_cpu.step()
+        except BaseException, e:
+            print(" Exception generated trying to step in the cpu")
+            print(e.args)
+            return
+
         if (status != 0) :
             print "Got non zero return from cpu.step()- stopping simulator"
             return
@@ -415,10 +422,15 @@ def load_pats_loader() :
     for l in line_buffer :
         data_word = int(l, 16)
 
-        address_space.write_type(memory_addr, AddressSpace.DATA_RW)
-        address_space.write(memory_addr, data_word);
-        address_space.write_type(memory_addr, AddressSpace.CODE_RO)
-        memory_addr = memory_addr + 1
+        try:
+           address_space.write_type(memory_addr, AddressSpace.DATA_RW)
+           address_space.write(memory_addr, data_word);
+           address_space.write_type(memory_addr, AddressSpace.CODE_RO)
+           memory_addr = memory_addr + 1
+        except BaseException, e:
+           print("Error while loading pats loader")
+           print(e.args)
+           return
 ######################################################################
 
    
