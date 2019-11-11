@@ -51,7 +51,7 @@ class AddressSpace(object):
                 relative_address = absolute_address - base_address
                 value = memory_mapped_device['device'].read(relative_address)
                 within_16_bits_check(value)
-                return(memory_mapped_device['device'].read(relative_address), self.type_buffer[absolute_address])
+                return(value, self.type_buffer[absolute_address])
         
         s = "FATAL Sim error in address_space.super_read() addr [%08X] No device mapped to this address" % (absolute_address)
         e = BaseException(s)
