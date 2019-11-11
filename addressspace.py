@@ -76,8 +76,6 @@ class AddressSpace(object):
             s = "FATAL Sim error in address_space.read() addr [%08X] < 0" % (absolute_address)
             e = BaseException(s)
             raise(e)
-            
-            
         device_is_found = 0
         for memory_mapped_device in self.device_list:
             base_address = memory_mapped_device['base_address']
@@ -114,7 +112,6 @@ class AddressSpace(object):
             s = "FATAL Sim error in address_space.code_read() addr [%08X] < 0" % (absolute_address)
             e = BaseException(s)
             raise(e)
-            
         device_is_found = 0
         for memory_mapped_device in self.device_list:
             base_address = memory_mapped_device['base_address']
@@ -130,6 +127,7 @@ class AddressSpace(object):
         e = BaseException(s)
         raise(e)
         
+
 
         
     def write(self, absolute_address, value):    
@@ -159,7 +157,6 @@ class AddressSpace(object):
             s = "ERROR tried to WRITE to value outside 16 bit range (decimal) [%d] " % (value)
             e = BaseException(s)
             raise(e)
-            
         device_is_found = 0
         for memory_mapped_device in self.device_list:
             base_address = memory_mapped_device['base_address']
@@ -172,7 +169,6 @@ class AddressSpace(object):
         s = "FATAL Sim error in address_space.write() addr [%08X] No device mapped to this address" % (absolute_address)
         e = BaseException(s)
         raise(e)
-
 
         
     def write_type(self, absolute_address, value):    
