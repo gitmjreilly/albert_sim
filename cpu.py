@@ -299,7 +299,7 @@ class CPU(object):
         if ((self._interrupt_pin == 1) and ((self.INT_CTL_LOW.read() & 0x0001) == 1)):
             # We have NOT incremented the PC.  JSR_INT assumes it points at the 
             # instruction to execute when RETI is executed.
-            status = self._do_instruction(CPU.JSR_INT_OPC)
+            status = self._do_instruction(CPU.JSR_INT_OPC, absolute_address)
         else:
             if (self._break_point_list.has_key(absolute_address) ) :
                 if (self._prev_break_point_address != absolute_address):                
