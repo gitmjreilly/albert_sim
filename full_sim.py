@@ -118,7 +118,6 @@ def construct_computer_system():
     
     # Make sure to keep RAM at end of address space because 
     # address space is searched (for devices) in insertion order
-# TODO uncomment this
     address_space.add_device(0, 0xFFFF, the_ram)
     
     
