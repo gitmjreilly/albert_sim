@@ -16,6 +16,7 @@ from scheduler import Scheduler
 from interrupt_controller import Interrupt_Controller
 from fifo_serial_port import FifoSerialPort
 from time import sleep
+from word_utilities import  valid_hex_word_check
 ######################################################################
 
 ######################################################################
@@ -107,14 +108,9 @@ def construct_computer_system():
     # Please note address spaces can overlap. They are searched in FIFO order
     address_space.add_device(0xF000, 0xF00F, console_serial_port)
     address_space.add_device(0xF010, 0xF01F, interrupt_controller)
-    # address_space.add_device(0xF090, 0xF09F, serial_1)
     # address_space.add_device(0xF030, 0xF03F, serial_2)
     address_space.add_device(0xF060, 0xF06F, counter_0)
 
-    # address_space.add_device(0x1F000, 0x1F00F, console_serial_port)
-    # address_space.add_device(0x2F000, 0x2F00F, console_serial_port)
-    # address_space.add_device(0x3F000, 0x3F00F, console_serial_port)
-    # address_space.add_device(0x4F000, 0x4F00F, console_serial_port)
     
     # Make sure to keep RAM at end of address space because 
     # address space is searched (for devices) in insertion order
@@ -207,9 +203,11 @@ def load_object_file() :
         
         
     s = f.read(4)
+    valid_hex_word_check(s)
     length = int(s, 16)
     
     s = f.read(4)
+    valid_hex_word_check(s)
     start_addr = int(s, 16)
     
     print("length is %04X start addr is %04X\n" % (length, start_addr))
@@ -223,7 +221,7 @@ def load_object_file() :
             return
             
         s = f.read(4)
-        # print("DEBUG hex 4 is [%s]" % (s))
+        valid_hex_word_check(s)
         data_word = int(s, 16)
             
         address_space.write(memory_addr, data_word)
@@ -419,6 +417,8 @@ def load_pats_loader() :
 
     memory_addr = 0x0000;
     for l in line_buffer :
+        l = l.rstrip()
+        valid_hex_word_check(l)
         data_word = int(l, 16)
 
         try:

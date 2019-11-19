@@ -43,6 +43,16 @@ class AddressSpace(object):
 
         
     def super_read(self, absolute_address):
+        if (absolute_address > (self.MEMORY_SIZE - 1)):
+            s = "FATAL Sim error in address_space.read() addr [%08X] > max mem addr [%08X]" % (absolute_address, (self.MEMORY_SIZE - 1))
+            e = BaseException(s)
+            raise(e)
+
+        if (absolute_address < 0):
+            s = "FATAL Sim error in address_space.read() addr [%08X] < 0" % (absolute_address)
+            e = BaseException(s)
+            raise(e)
+
         device_is_found = 0
         for memory_mapped_device in self.device_list:
             base_address = memory_mapped_device['base_address']
@@ -76,6 +86,7 @@ class AddressSpace(object):
             s = "FATAL Sim error in address_space.read() addr [%08X] < 0" % (absolute_address)
             e = BaseException(s)
             raise(e)
+
         device_is_found = 0
         for memory_mapped_device in self.device_list:
             base_address = memory_mapped_device['base_address']
@@ -112,6 +123,7 @@ class AddressSpace(object):
             s = "FATAL Sim error in address_space.code_read() addr [%08X] < 0" % (absolute_address)
             e = BaseException(s)
             raise(e)
+
         device_is_found = 0
         for memory_mapped_device in self.device_list:
             base_address = memory_mapped_device['base_address']
